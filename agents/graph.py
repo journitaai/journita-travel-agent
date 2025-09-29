@@ -38,28 +38,13 @@ TOOLS_SYSTEM_PROMPT = f"""You are a smart travel agency. Use the tools to look u
 TOOLS = [flights_finder, hotels_finder]
 
 
-
-
-class Agent:
-
+class TravelAgent:
     def __init__(self):
         self._tools = {t.name: t for t in TOOLS}
         self._tools_llm = ChatGoogleGenerativeAI(
             model="gemini-2.0-flash",
             temperature=0.1
         ).bind_tools(TOOLS)
-
-        builder = StateGraph(AgentState)
-        builder.add_node('call_tools_llm', self.call_tools_llm)
-        builder.add_node('invoke_tools', self.invoke_tools)
-        builder.set_entry_point('call_tools_llm')
-
-        builder.add_conditional_edges('call_tools_llm', Agent.exists_action, {'invoke_tools': 'invoke_tools', END: END})
-        builder.add_edge('invoke_tools', 'call_tools_llm')
-        memory = MemorySaver()
-        self.graph = builder.compile(checkpointer=memory)
-
-        print(self.graph.get_graph().draw_mermaid())
 
     @staticmethod
     def exists_action(state: AgentState):
@@ -87,3 +72,23 @@ class Agent:
             results.append(ToolMessage(tool_call_id=t['id'], name=t['name'], content=str(result)))
         print('Back to the model!')
         return {'messages': results}
+
+
+# Create the graph
+def create_graph():
+    agent = TravelAgent()
+    
+    builder = StateGraph(AgentState)
+    builder.add_node('call_tools_llm', agent.call_tools_llm)
+    builder.add_node('invoke_tools', agent.invoke_tools)
+    builder.set_entry_point('call_tools_llm')
+
+    builder.add_conditional_edges('call_tools_llm', TravelAgent.exists_action, {'invoke_tools': 'invoke_tools', END: END})
+    builder.add_edge('invoke_tools', 'call_tools_llm')
+    
+    memory = MemorySaver()
+    return builder.compile(checkpointer=memory)
+
+
+# This is the graph that LangGraph CLI will use
+graph = create_graph()

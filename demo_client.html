@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Production Travel Agent Demo ✈️</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-ok { color: #28a745; }
+        .status-warning { color: #ffc107; }
+        .status-error { color: #dc3545; }
+        
+        .input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        textarea, input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .response-container {
+            background: #212529;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 200px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        
+        .loading {
+            color: #17a2b8;
+            font-style: italic;
+        }
+        
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .success {
+            color: #28a745;
+        }
+        
+        .info {
+            color: #17a2b8;
+        }
+        
+        .demo-scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .scenario-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .scenario-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .scenario-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .scenario-desc {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">Production Travel Agent Demo</div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span>🚀 Server:</span>
+                    <span id="serverStatus" class="status-ok">Connected</span>
+                </div>
+                <div class="status-item">
+                    <span>🤖 Mode:</span>
+                    <span id="agentMode" class="status-warning">Loading...</span>
+                </div>
+                <div class="status-item">
+                    <span>📡 API:</span>
+                    <span id="apiStatus" class="status-ok">Ready</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-scenarios">
+            <div class="scenario-card" onclick="loadScenario('flights_hotels')">
+                <div class="scenario-title">✈️🏨 Flights + Hotels</div>
+                <div class="scenario-desc">Complete travel package search</div>
+            </div>
+            <div class="scenario-card" onclick="loadScenario('flights_only')">
+                <div class="scenario-title">✈️ Flights Only</div>
+                <div class="scenario-desc">Focus on flight options</div>
+            </div>
+            <div class="scenario-card" onclick="loadScenario('hotels_only')">
+                <div class="scenario-title">🏨 Hotels Only</div>
+                <div class="scenario-desc">Accommodation search</div>
+            </div> 
+            <div class="scenario-card" onclick="loadScenario('budget_travel')">
+                <div class="scenario-title">💰 Budget Travel</div>
+                <div class="scenario-desc">Affordable options</div>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="query">Travel Query:</label>
+                <textarea id="query" placeholder="Enter your travel query here..."></textarea>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group">
+                    <label for="threadId">Thread ID (optional):</label>
+                    <input type="text" id="threadId" placeholder="Leave empty for new thread">
+                </div>
+                
+                <div class="input-group">
+                    <label for="agentMode">Agent Mode:</label>
+                    <select id="agentMode">
+                        <option value="false">Mock Mode (Fast Demo)</option>
+                        <option value="true">Real AI Agent (Requires API Key)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-primary" onclick="queryAgent(false)">Send Query</button>
+            <button class="btn-success" onclick="queryAgent(true)">Stream Response</button>
+            <button class="btn-secondary" onclick="clearResponse()">Clear</button>
+        </div>
+        
+        <div class="response-container" id="response"></div>
+        
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-value" id="requestCount">0</div>
+                <div class="metric-label">Requests</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="avgResponseTime">0ms</div>
+                <div class="metric-label">Avg Response</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="streamCount">0</div>
+                <div class="metric-label">Streams</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="successRate">100%</div>
+                <div class="metric-label">Success Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let requestCount = 0;
+        let streamCount = 0;
+        let responseTimes = [];
+        let successCount = 0;
+        
+        const scenarios = {
+            'flights_hotels': "Find me flights from London to Paris next week and 4-star hotels in the city center",
+            'flights_only': "Show me budget flights from New York to Tokyo departing in March",
+            'hotels_only': "I need luxury hotels in Rome near the Vatican with spa facilities",
+            'budget_travel': "Find me the cheapest flights and hostels for backpacking through Europe"
+        };
+        
+        function loadScenario(scenarioKey) {
+            document.getElementById('query').value = scenarios[scenarioKey];
+        }
+        
+        function updateMetrics() {
+            document.getElementById('requestCount').textContent = requestCount;
+            document.getElementById('streamCount').textContent = streamCount;
+            
+            if (responseTimes.length > 0) {
+                const avgTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length;
+                document.getElementById('avgResponseTime').textContent = Math.round(avgTime) + 'ms';
+            }
+            
+            const successRate = requestCount > 0 ? Math.round((successCount / requestCount) * 100) : 100;
+            document.getElementById('successRate').textContent = successRate + '%';
+        }
+        
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                const data = await response.json();
+                
+                document.getElementById('serverStatus').textContent = 'Connected';
+                document.getElementById('serverStatus').className = 'status-ok';
+                
+                const mode = data.mode === 'real' ? 'Real AI' : 'Mock Mode';
+                document.getElementById('agentMode').textContent = mode;
+                document.getElementById('agentMode').className = data.mode === 'real' ? 'status-ok' : 'status-warning';
+                
+            } catch (error) {
+                document.getElementById('serverStatus').textContent = 'Disconnected';
+                document.getElementById('serverStatus').className = 'status-error';
+            }
+        }
+        
+        async function queryAgent(streaming = false) {
+            const query = document.getElementById('query').value.trim();
+            const threadId = document.getElementById('threadId').value.trim();
+            const useRealAgent = document.getElementById('agentMode').value === 'true';
+            const responseDiv = document.getElementById('response');
+            
+            if (!query) {
+                responseDiv.innerHTML = '<span class="error">Please enter a travel query</span>';
+                return;
+            }
+            
+            const payload = {
+                query: query,
+                thread_id: threadId || null,
+                use_real_agent: useRealAgent
+            };
+            
+            responseDiv.innerHTML = '<span class="loading">🔄 Processing your request...</span>';
+            
+            const startTime = Date.now();
+            requestCount++;
+            
+            try {
+                if (streaming) {
+                    streamCount++;
+                    await streamQuery(payload, responseDiv);
+                } else {
+                    await regularQuery(payload, responseDiv);
+                }
+                
+                successCount++;
+                responseTimes.push(Date.now() - startTime);
+                
+            } catch (error) {
+                responseDiv.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+            
+            updateMetrics();
+        }
+        
+        async function regularQuery(payload, responseDiv) {
+            const response = await fetch(`${API_BASE}/travel/query`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const result = await response.json();
+            
+            responseDiv.innerHTML = `<span class="info">🆔 Thread: ${result.thread_id}</span>
+<span class="info">⏱️ Mode: ${result.mode}</span>
+<span class="info">📊 Time: ${result.processing_time}s</span>
+
+<span class="success">✅ Response:</span>
+${result.response}`;
+            
+            // Update thread ID field for follow-up queries
+            document.getElementById('threadId').value = result.thread_id;
+        }
+        
+        async function streamQuery(payload, responseDiv) {
+            const response = await fetch(`${API_BASE}/travel/stream`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            
+            responseDiv.innerHTML = '<span class="info">🔄 Streaming response...</span>\n\n';
+            
+            try {
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.substring(6);
+                            if (data === '[DONE]') {
+                                responseDiv.innerHTML += '\n\n<span class="success">✅ Stream completed</span>';
+                                return;
+                            } else if (data.trim()) {
+                                responseDiv.innerHTML += data;
+                                responseDiv.scrollTop = responseDiv.scrollHeight;
+                            }
+                        }
+                    }
+                }
+            } finally {
+                reader.releaseLock();
+            }
+        }
+        
+        function clearResponse() {
+            document.getElementById('response').innerHTML = '';
+        }
+        
+        // Initialize
+        window.onload = function() {
+            checkServerStatus();
+            loadScenario('flights_hotels');
+            
+            // Check server status every 30 seconds
+            setInterval(checkServerStatus, 30000);
+        };
+    </script>
+</body>
+</html>
