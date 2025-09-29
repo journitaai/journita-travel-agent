@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Travel Agent - LangGraph Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status.connected {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .status.disconnected {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .chat-container {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .user-message {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .agent-message {
+            background: #e9ecef;
+            color: #333;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .examples {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 10px;
+        }
+        .example-btn {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+            margin: 5px;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        .example-btn:hover {
+            background: #1976d2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 AI Travel Agent</h1>
+        <div id="status" class="status disconnected">
+            <span>🔴</span>
+            <span>Connecting to LangGraph agent...</span>
+        </div>
+        
+        <div id="chat" class="chat-container">
+            <div class="message agent-message">
+                🤖 <strong>Travel Agent:</strong> Hello! I'm your AI travel assistant powered by Gemini 2.0 Flash and LangGraph. I can help you find flights and hotels. What's your travel plan?
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <input type="text" id="messageInput" placeholder="Ask me about flights and hotels..." disabled>
+            <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+        </div>
+        
+        <div class="examples">
+            <strong>💡 Try these examples:</strong><br>
+            <button class="example-btn" onclick="sendExample('Find flights from New York to London for December 15-22')">NYC to London</button>
+            <button class="example-btn" onclick="sendExample('I need a hotel in Paris for 3 nights, 4-star rating')">Paris Hotels</button>
+            <button class="example-btn" onclick="sendExample('Plan a trip to Tokyo from Los Angeles, departing January 10')">LA to Tokyo</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        const chatContainer = document.getElementById('chat');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const statusDiv = document.getElementById('status');
+
+        let threadId = 'user_' + Math.random().toString(36).substr(2, 9);
+
+        // Check server status
+        async function checkStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    statusDiv.className = 'status connected';
+                    statusDiv.innerHTML = '<span>🟢</span><span>Connected to LangGraph Agent (Gemini 2.0 Flash)</span>';
+                    messageInput.disabled = false;
+                    sendBtn.disabled = false;
+                } else {
+                    throw new Error('Server not healthy');
+                }
+            } catch (error) {
+                statusDiv.className = 'status disconnected';
+                statusDiv.innerHTML = '<span>🔴</span><span>Cannot connect to server. Make sure uvicorn is running on port 8000.</span>';
+            }
+        }
+
+        // Send message to the agent
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            messageInput.value = '';
+            sendBtn.disabled = true;
+
+            // Add loading message
+            const loadingDiv = addMessage('🤖 LangGraph agent is thinking...', 'agent');
+            loadingDiv.classList.add('loading');
+
+            try {
+                const response = await fetch(`${API_BASE}/chat/stream`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        thread_id: threadId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                // Remove loading message
+                loadingDiv.remove();
+
+                // Handle streaming response
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let fullResponse = '';
+                const responseDiv = addMessage('', 'agent');
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+                            const data = line.slice(6);
+                            if (data && data !== '[DONE]') {
+                                fullResponse += data;
+                                responseDiv.innerHTML = `🤖 <strong>Travel Agent:</strong> ${fullResponse}`;
+                                chatContainer.scrollTop = chatContainer.scrollHeight;
+                            }
+                        }
+                    }
+                }
+
+            } catch (error) {
+                loadingDiv.innerHTML = `🤖 <strong>Error:</strong> ${error.message}`;
+                loadingDiv.classList.remove('loading');
+            }
+
+            sendBtn.disabled = false;
+        }
+
+        // Add message to chat
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `<strong>You:</strong> ${text}`;
+            } else {
+                messageDiv.innerHTML = `🤖 <strong>Travel Agent:</strong> ${text}`;
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return messageDiv;
+        }
+
+        // Send example message
+        function sendExample(text) {
+            messageInput.value = text;
+            sendMessage();
+        }
+
+        // Enter key to send
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Check status on load
+        checkStatus();
+        setInterval(checkStatus, 30000); // Check every 30 seconds
+    </script>
+</body>
+</html>

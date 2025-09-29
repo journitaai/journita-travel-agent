@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Journita Travel Agent - Showcase</title>
+    
+    <!-- External Resources -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-solid: #667eea;
+            --secondary: #f093fb;
+            --accent: #ffd89b;
+            --success: #4ade80;
+            --error: #f87171;
+            --warning: #fbbf24;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --surface: #ffffff;
+            --text: #334155;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-solid);
+        }
+
+        .try-button {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .try-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--primary);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-features {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 1rem 2rem;
+            background: white;
+            color: var(--primary-solid);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Demo Section */
+        .demo-preview {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .demo-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .demo-chat {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header {
+            background: var(--primary-solid);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-messages {
+            padding: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .user-avatar {
+            background: var(--primary-solid);
+            color: white;
+        }
+
+        .bot-avatar {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .message-bubble {
+            background: var(--light);
+            padding: 0.75rem 1rem;
+            border-radius: 15px;
+            max-width: 80%;
+            font-size: 0.9rem;
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .user-message .message-bubble {
+            background: var(--primary-solid);
+            color: white;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-header p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 5rem 0;
+            background: var(--light);
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .step-card p {
+            color: var(--text-light);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 5rem 0;
+            background: white;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: var(--light);
+            border-radius: 20px;
+            padding: 2rem;
+            border-left: 4px solid var(--primary-solid);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .author-info h4 {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .author-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 0;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in-up.aos-animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-plane"></i>
+                <span>Journita</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#testimonials">Reviews</a></li>
+            </ul>
+            <a href="#demo" class="try-button">Try Demo</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 data-aos="fade-right">AI-Powered Travel Planning Revolution</h1>
+                <p data-aos="fade-right" data-aos-delay="100">Experience the future of travel with our intelligent agent powered by Google Gemini 2.0 Flash and LangGraph. Get personalized recommendations in seconds.</p>
+                
+                <div class="hero-features" data-aos="fade-right" data-aos-delay="200">
+                    <div class="hero-feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>Real-time</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fas fa-brain"></i>
+                        <span>AI-Powered</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fas fa-globe"></i>
+                        <span>Global Coverage</span>
+                    </div>
+                </div>
+
+                <div class="cta-buttons" data-aos="fade-up" data-aos-delay="300">
+                    <a href="frontend.html" class="btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        Try Live Demo
+                    </a>
+                    <a href="#features" class="btn-secondary">Learn More</a>
+                </div>
+            </div>
+
+            <div class="demo-preview" data-aos="fade-left">
+                <div class="demo-header">
+                    <i class="fas fa-robot"></i>
+                    <h3>Live AI Assistant</h3>
+                </div>
+                <div class="demo-chat">
+                    <div class="chat-header">
+                        <i class="fas fa-circle" style="color: #4ade80;"></i>
+                        <span>Journita Travel Agent</span>
+                    </div>
+                    <div class="chat-messages">
+                        <div class="chat-message">
+                            <div class="message-avatar user-avatar">👤</div>
+                            <div class="message-bubble">Find flights from NYC to Paris for next week</div>
+                        </div>
+                        <div class="chat-message">
+                            <div class="message-avatar bot-avatar">🤖</div>
+                            <div class="message-bubble">I found several great options! Here are the best flights from New York to Paris...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Powerful Features</h2>
+                <p>Everything you need for intelligent travel planning in one AI-powered platform</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <h3>Smart Flight Search</h3>
+                    <p>Advanced AI algorithms search through millions of flight combinations to find you the best deals with real-time pricing and availability.</p>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-hotel"></i>
+                    </div>
+                    <h3>Hotel Recommendations</h3>
+                    <p>Get personalized hotel suggestions based on your preferences, budget, and travel dates with detailed reviews and amenities.</p>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Gemini 2.0 Flash AI</h3>
+                    <p>Powered by Google's latest AI model for natural conversations and intelligent travel recommendations that understand your needs.</p>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Real-time Streaming</h3>
+                    <p>Get instant responses with live data updates. No waiting - watch your travel options appear in real-time as you chat.</p>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-memory"></i>
+                    </div>
+                    <h3>Conversation Memory</h3>
+                    <p>Our AI remembers your conversation context and preferences throughout your session for more personalized recommendations.</p>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure & Private</h3>
+                    <p>Your travel data is protected with enterprise-grade security. We never store your personal information or travel details.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>How It Works</h2>
+                <p>Get personalized travel recommendations in three simple steps</p>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="step-number">1</div>
+                    <h3>Tell Us Your Plans</h3>
+                    <p>Simply describe your travel needs in natural language. Our AI understands context and preferences.</p>
+                </div>
+
+                <div class="step-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="step-number">2</div>
+                    <h3>AI Searches & Analyzes</h3>
+                    <p>Our Gemini 2.0 Flash AI searches real-time data and analyzes millions of options to find the best matches.</p>
+                </div>
+
+                <div class="step-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="step-number">3</div>
+                    <h3>Get Personalized Results</h3>
+                    <p>Receive curated recommendations with all the details you need to make informed travel decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>What Travelers Say</h2>
+                <p>Join thousands of satisfied travelers who use our AI assistant</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                    <p class="testimonial-text">"Amazing! Found perfect flights to Tokyo in seconds. The AI understood exactly what I needed and saved me hours of searching."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">S</div>
+                        <div class="author-info">
+                            <h4>Sarah Chen</h4>
+                            <p>Digital Nomad</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                    <p class="testimonial-text">"The hotel recommendations were spot-on! The AI knew I needed family-friendly options and found the perfect resort in Orlando."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">M</div>
+                        <div class="author-info">
+                            <h4>Mike Rodriguez</h4>
+                            <p>Family Traveler</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
+                    <p class="testimonial-text">"Best travel planning tool I've ever used. The conversational interface makes it so easy to find exactly what you're looking for."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">E</div>
+                        <div class="author-info">
+                            <h4>Emma Thompson</h4>
+                            <p>Business Traveler</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 data-aos="fade-up">Ready to Plan Your Next Adventure?</h2>
+            <p data-aos="fade-up" data-aos-delay="100">Experience the future of travel planning with our AI-powered assistant</p>
+            <div class="cta-buttons" data-aos="fade-up" data-aos-delay="200">
+                <a href="frontend.html" class="btn-primary">
+                    <i class="fas fa-rocket"></i>
+                    Start Planning Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Journita Travel Agent</h3>
+                    <p>AI-powered travel planning for the modern traveler. Discover the world with intelligent recommendations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Features</h3>
+                    <p><a href="#features">Smart Flight Search</a></p>
+                    <p><a href="#features">Hotel Recommendations</a></p>
+                    <p><a href="#features">Real-time Updates</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Technology</h3>
+                    <p><a href="#">Google Gemini 2.0 Flash</a></p>
+                    <p><a href="#">LangGraph Framework</a></p>
+                    <p><a href="#">FastAPI Backend</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Built for Render deployment</p>
+                    <p>Powered by AI</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Journita Travel Agent. Powered by Google Gemini 2.0 Flash.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // Demo chat animation
+        function animateChat() {
+            const messages = document.querySelectorAll('.chat-message');
+            messages.forEach((message, index) => {
+                message.style.opacity = '0';
+                message.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    message.style.transition = 'all 0.5s ease';
+                    message.style.opacity = '1';
+                    message.style.transform = 'translateY(0)';
+                }, index * 1000 + 2000);
+            });
+        }
+
+        // Start chat animation when hero section is visible
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateChat();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        observer.observe(document.querySelector('.hero'));
+    </script>
+</body>
+</html>

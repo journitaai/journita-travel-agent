@@ -52,7 +52,7 @@ Production-ready Travel Agent API with streaming responses.
 
 **Mode**: {'🤖 Real AI Agent' if REAL_INTEGRATION else '🎭 Mock Mode'}
 **Features**: Real-time streaming, thread persistence, comprehensive travel search
-**Integration**: LangGraph + OpenAI + SerpAPI
+**Integration**: LangGraph + Gemini + SerpAPI
         """.strip()
     )
     
@@ -243,7 +243,7 @@ Production-ready Travel Agent API with streaming responses.
                 "serpapi": "✅ Available" if HAS_SERPAPI else "❌ Missing"
             },
             "frontend": {
-                "note": "Use the React frontend in the /frontend directory"
+                "note": "Use the React frontend in the /frontend directory or simple_frontend.html"
             }
         }
     
@@ -270,34 +270,6 @@ Production-ready Travel Agent API with streaming responses.
             "timestamp": datetime.now().isoformat()
         }
     
-    @app.post("/travel/query")
-    async def query_travel_agent(travel_query: TravelQuery) -> TravelResponse:
-        """Main travel query endpoint - uses real agent if available"""
-        start_time = asyncio.get_event_loop().time()
-        thread_id = travel_query.thread_id or str(uuid.uuid4())
-        
-        try:
-            if REAL_INTEGRATION and travel_query.use_real_agent:
-                response = await query_real_agent(travel_query.query, thread_id)
-                mode = "real"
-            else:
-                await asyncio.sleep(1)  # Simulate processing time
-                response = generate_mock_response(travel_query.query)
-                mode = "mock"
-            
-            processing_time = asyncio.get_event_loop().time() - start_time
-            
-            return TravelResponse(
-                response=response,
-                thread_id=thread_id,
-                timestamp=datetime.now().isoformat(),
-                mode=mode,
-                processing_time=round(processing_time, 2)
-            )
-            
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
-
     @app.post("/chat")
     async def chat(chat_message: ChatMessage):
         """Simple chat endpoint for React frontend"""
@@ -344,6 +316,34 @@ Production-ready Travel Agent API with streaming responses.
             }
         )
     
+    @app.post("/travel/query")
+    async def query_travel_agent(travel_query: TravelQuery) -> TravelResponse:
+        """Main travel query endpoint - uses real agent if available"""
+        start_time = asyncio.get_event_loop().time()
+        thread_id = travel_query.thread_id or str(uuid.uuid4())
+        
+        try:
+            if REAL_INTEGRATION and travel_query.use_real_agent:
+                response = await query_real_agent(travel_query.query, thread_id)
+                mode = "real"
+            else:
+                await asyncio.sleep(1)  # Simulate processing time
+                response = generate_mock_response(travel_query.query)
+                mode = "mock"
+            
+            processing_time = asyncio.get_event_loop().time() - start_time
+            
+            return TravelResponse(
+                response=response,
+                thread_id=thread_id,
+                timestamp=datetime.now().isoformat(),
+                mode=mode,
+                processing_time=round(processing_time, 2)
+            )
+            
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
     @app.post("/travel/stream")
     async def stream_travel_agent(travel_query: TravelQuery):
         """Streaming travel query endpoint"""
@@ -382,17 +382,18 @@ Production-ready Travel Agent API with streaming responses.
 
     if __name__ == "__main__":
         print("\n🚀 Starting production server...")
-        print("📱 API: http://localhost:8000")
-        print("💬 Chat: http://localhost:8000/chat")
-        print("🌊 Stream: http://localhost:8000/chat/stream")
-        print("📚 Docs: http://localhost:8000/docs") 
-        print("📊 Status: http://localhost:8000/status")
+        print("📱 API: http://localhost:8002")
+        print("💬 Chat: http://localhost:8002/chat")
+        print("🌊 Stream: http://localhost:8002/chat/stream")
+        print("📚 Docs: http://localhost:8002/docs") 
+        print("📊 Status: http://localhost:8002/status")
         print("⚛️ Frontend: Start React app in /frontend directory")
+        print("🌐 Simple Frontend: Open simple_frontend.html in browser")
         
         uvicorn.run(
             app,
             host="127.0.0.1",
-            port=8000,
+            port=8002,  # Using port 8002
             log_level="info",
             reload=False
         )

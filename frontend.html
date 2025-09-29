@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Journita Travel Agent - AI-Powered Travel Planning</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #f59e0b;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-connected {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-disconnected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        .chat-section {
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .chat-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-container {
+            height: 500px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: #f8fafc;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            max-width: 80%;
+        }
+
+        .message.user {
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .user .message-avatar {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .agent .message-avatar {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .message-content {
+            background: var(--surface);
+            padding: 1rem 1.25rem;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .user .message-content {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Input Section */
+        .input-section {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .message-input {
+            width: 100%;
+            min-height: 50px;
+            max-height: 120px;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .message-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .send-button {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: background-color 0.2s, transform 0.1s;
+            flex-shrink: 0;
+        }
+
+        .send-button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .send-button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Examples Section */
+        .examples-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .example-card {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .example-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .example-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .example-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .example-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Loading States */
+        .loading-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .chat-container {
+                height: 400px;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: var(--border);
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: var(--text-secondary);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-plane"></i>
+                    <span>Journita Travel Agent</span>
+                </div>
+                <div id="connectionStatus" class="status-indicator status-disconnected">
+                    <i class="fas fa-circle"></i>
+                    <span>Connecting...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>AI-Powered Travel Planning</h1>
+            <p>Experience the future of travel with our intelligent agent powered by Google Gemini 2.0 Flash and LangGraph. Get personalized flight and hotel recommendations in real-time.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✈️</div>
+                    <h3>Smart Flight Search</h3>
+                    <p>Real-time flight data with price comparisons</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏨</div>
+                    <h3>Hotel Recommendations</h3>
+                    <p>Curated accommodations with ratings & reviews</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI Assistant</h3>
+                    <p>Powered by Gemini 2.0 Flash for intelligent responses</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-time Streaming</h3>
+                    <p>Instant responses with live data updates</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-header">
+                    <i class="fas fa-robot"></i>
+                    <div>
+                        <h2>Travel Planning Assistant</h2>
+                        <p>Ask me about flights, hotels, or travel recommendations</p>
+                    </div>
+                </div>
+                
+                <div id="chatContainer" class="chat-container">
+                    <div class="message agent">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <div>
+                                <strong>Journita Travel Agent</strong><br>
+                                Welcome! I'm your AI travel assistant powered by Google Gemini 2.0 Flash. I can help you find flights, hotels, and plan your perfect trip. What travel adventure are you planning?
+                            </div>
+                            <div class="message-time" id="welcomeTime"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <textarea 
+                                id="messageInput" 
+                                class="message-input" 
+                                placeholder="Ask me about flights, hotels, or travel plans..."
+                                rows="1"
+                                disabled
+                            ></textarea>
+                        </div>
+                        <button id="sendButton" class="send-button" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Examples Section -->
+            <div class="examples-section">
+                <h2><i class="fas fa-lightbulb"></i> Try These Travel Queries</h2>
+                <div class="examples-grid">
+                    <div class="example-card" onclick="sendExample('Find flights from New York to Paris departing December 15, returning December 22')">
+                        <div class="example-icon">🗽➡️🗼</div>
+                        <div class="example-title">NYC to Paris</div>
+                        <div class="example-description">Round-trip flights with flexible dates</div>
+                    </div>
+                    
+                    <div class="example-card" onclick="sendExample('I need a 4-star hotel in London near Big Ben for 5 nights in January')">
+                        <div class="example-icon">🏨🇬🇧</div>
+                        <div class="example-title">London Hotels</div>
+                        <div class="example-description">Premium accommodations in central London</div>
+                    </div>
+                    
+                    <div class="example-card" onclick="sendExample('Plan a trip to Tokyo from Los Angeles, departing January 10 for 2 weeks')">
+                        <div class="example-icon">🌴➡️🗾</div>
+                        <div class="example-title">LA to Tokyo</div>
+                        <div class="example-description">Complete travel planning with recommendations</div>
+                    </div>
+                    
+                    <div class="example-card" onclick="sendExample('Find budget flights from Miami to Barcelona for spring break')">
+                        <div class="example-icon">🏖️➡️🏛️</div>
+                        <div class="example-title">Budget Travel</div>
+                        <div class="example-description">Affordable options for student travel</div>
+                    </div>
+                    
+                    <div class="example-card" onclick="sendExample('Recommend luxury hotels in Dubai with spa and ocean view')">
+                        <div class="example-icon">🏙️✨</div>
+                        <div class="example-title">Luxury Dubai</div>
+                        <div class="example-description">Premium experiences in the UAE</div>
+                    </div>
+                    
+                    <div class="example-card" onclick="sendExample('Find family-friendly hotels in Orlando near Disney World for summer vacation')">
+                        <div class="example-icon">👨‍👩‍👧‍👦🏰</div>
+                        <div class="example-title">Family Orlando</div>
+                        <div class="example-description">Kid-friendly accommodations and activities</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Configuration
+        const API_BASE = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8000' 
+            : 'https://journita-travel-agent.onrender.com'; // Update with your Render URL
+        
+        // Generate unique thread ID
+        const THREAD_ID = 'user_' + Math.random().toString(36).substr(2, 9);
+        
+        // DOM Elements
+        const chatContainer = document.getElementById('chatContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const connectionStatus = document.getElementById('connectionStatus');
+        
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Send message on Enter (Shift+Enter for new line)
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set welcome message time
+            document.getElementById('welcomeTime').textContent = new Date().toLocaleTimeString();
+            
+            // Check connection
+            checkConnection();
+            
+            // Periodic connection check
+            setInterval(checkConnection, 30000);
+        });
+
+        // Check API connection
+        async function checkConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    updateConnectionStatus(true, 'Connected to AI Agent');
+                    enableInput();
+                } else {
+                    throw new Error('API not healthy');
+                }
+            } catch (error) {
+                updateConnectionStatus(false, 'Connection failed');
+                disableInput();
+            }
+        }
+
+        function updateConnectionStatus(connected, message) {
+            const icon = connected ? 'fa-circle' : 'fa-circle';
+            const statusClass = connected ? 'status-connected' : 'status-disconnected';
+            
+            connectionStatus.className = `status-indicator ${statusClass}`;
+            connectionStatus.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+        }
+
+        function enableInput() {
+            messageInput.disabled = false;
+            sendButton.disabled = false;
+            messageInput.placeholder = "Ask me about flights, hotels, or travel plans...";
+        }
+
+        function disableInput() {
+            messageInput.disabled = true;
+            sendButton.disabled = true;
+            messageInput.placeholder = "Connecting to travel agent...";
+        }
+
+        // Send message
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message || sendButton.disabled) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            // Disable input during processing
+            sendButton.disabled = true;
+            
+            // Show typing indicator
+            const typingIndicator = showTypingIndicator();
+
+            try {
+                const response = await fetch(`${API_BASE}/chat/stream`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        thread_id: THREAD_ID
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                // Remove typing indicator
+                typingIndicator.remove();
+
+                // Handle streaming response
+                await handleStreamingResponse(response);
+
+            } catch (error) {
+                typingIndicator.remove();
+                addMessage(`Sorry, I encountered an error: ${error.message}. Please try again.`, 'agent', true);
+            } finally {
+                sendButton.disabled = false;
+            }
+        }
+
+        // Handle streaming response
+        async function handleStreamingResponse(response) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullResponse = '';
+            
+            // Add empty message for streaming
+            const messageElement = addMessage('', 'agent');
+            const contentElement = messageElement.querySelector('.message-content div');
+            
+            try {
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value, { stream: true });
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6).trim();
+                            if (data === '[DONE]') {
+                                return;
+                            }
+                            if (data && data !== '') {
+                                fullResponse += data;
+                                contentElement.innerHTML = `<strong>Journita Travel Agent</strong><br>${fullResponse}`;
+                                scrollToBottom();
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                contentElement.innerHTML = `<strong>Journita Travel Agent</strong><br>Sorry, there was an error processing your request. Please try again.`;
+            }
+        }
+
+        // Add message to chat
+        function addMessage(text, sender, isError = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = sender === 'user' ? '👤' : '🤖';
+            const name = sender === 'user' ? 'You' : 'Journita Travel Agent';
+            const time = new Date().toLocaleTimeString();
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">
+                    <div><strong>${name}</strong><br>${text}</div>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            if (isError) {
+                messageDiv.querySelector('.message-content').style.borderLeft = '4px solid var(--error-color)';
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            scrollToBottom();
+            
+            return messageDiv;
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message agent';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="typing-indicator" style="display: flex;">
+                        <span>Thinking</span>
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            chatContainer.appendChild(typingDiv);
+            scrollToBottom();
+            
+            return typingDiv;
+        }
+
+        // Send example message
+        function sendExample(text) {
+            messageInput.value = text;
+            sendMessage();
+        }
+
+        // Scroll to bottom
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Send button click handler
+        sendButton.addEventListener('click', sendMessage);
+    </script>
+</body>
+</html>

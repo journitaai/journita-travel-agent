@@ -1,0 +1,84 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+docs/
+
+# Test files
+test_*.py
+*_test.py
+tests/
+
+# Demo and development files
+demo_client.html
+web_client.html
+fix_api_keys.py
+start_server.*
+streaming_server.py
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Other
+LICENSE
+images/
+.env.example
+README*.md
+DEMO_GUIDE.md
+QUICK_START.md
+UVICORN_GUIDE.md

@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: travel-agent-api
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: SERPAPI_API_KEY
+        sync: false
+      - key: LANGSMITH_API_KEY
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHONPATH
+        value: /app
+    healthCheckPath: /health
+    domains:
+      - journita-travel-agent.onrender.com
